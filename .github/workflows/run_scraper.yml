@@ -1,0 +1,20 @@
+name: Run Selenium Scraper
+
+on:
+  push:
+    branches: [ main ]  # 當你把程式碼 push 到 main 分支時觸發
+  workflow_dispatch:     # 讓你可以在 GitHub 網頁上手動點擊執行
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest # 使用 GitHub 提供的 Linux 環境
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 # 下載你的程式碼
+
+      - name: Build Docker Image
+        run: docker build -t my-scraper . # 執行你剛才學會的 Build 指令
+
+      - name: Run Scraper in Docker
+        run: docker run my-scraper # 執行你剛才學會的 Run 指令
