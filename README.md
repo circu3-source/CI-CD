@@ -44,3 +44,5 @@ docker build -t my-scraper .
 
 # 2. 執行容器
 docker run my-scraper
+
+「本專案已成功達成自動化排程，最新的抓取結果請參閱 result.txt。」
