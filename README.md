@@ -8,7 +8,6 @@ Python Selenium 雲端自動化爬蟲 (CI/CD 專案)
 
 定時排程：設定為每小時的 0 分鐘自動觸發執行。
 
-**技術棧
 語言：Python 3.9+
 
 工具：Selenium (Headless Mode)
