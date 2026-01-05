@@ -2,19 +2,34 @@ name: Run Selenium Scraper
 
 on:
   push:
-    branches: [ main ]  # 當你把程式碼 push 到 main 分支時觸發
-  workflow_dispatch:     # 讓你可以在 GitHub 網頁上手動點擊執行
+    branches: [ main ]
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build-and-run:
-    runs-on: ubuntu-latest # 使用 GitHub 提供的 Linux 環境
+    runs-on: ubuntu-latest
+    # 賦予 Actions 寫入倉庫的權限
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # 下載你的程式碼
+        uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: docker build -t my-scraper . # 執行你剛才學會的 Build 指令
+        run: docker build -t my-scraper .
 
-      - name: Run Scraper in Docker
-        run: docker run my-scraper # 執行你剛才學會的 Run 指令
+      - name: Run Scraper and Map Volume
+        # 使用 -v 將容器內的 /app 映射到 GitHub 虛擬機的工作路徑
+        # 這樣容器產出的 result.txt 就會出現在虛擬機上
+        run: docker run -v ${{ github.workspace }}:/app my-scraper
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "actions@github.com"
+          git add result.txt
+          # 檢查是否有變動，避免沒有資料更新時報錯
+          git diff --quiet && git diff --staged --quiet || (git commit -m "自動更新抓取結果" && git push)
